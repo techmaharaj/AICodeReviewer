@@ -42,7 +42,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        gh pr comment ${{ github.event.pull_request.number }} --body "${{ env.REVIEW }}"
+        gh pr comment ${{ github.event.pull_request.number }} --body "$REVIEW"
 
     - name: Set PR Status Fail
       if: contains(env.REVIEW, 'Require Changes')
