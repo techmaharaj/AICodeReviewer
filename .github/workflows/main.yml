@@ -46,7 +46,7 @@ jobs:
 
     # Then you can use it in your if statement like so 
     - name: Conditionally Run
-      if: contains(env.REVIEW, 'Code/':'/ Require Changes')
+      if: contains(env.REVIEW, 'Code:Require Changes')
       run: |
        echo "Code Required Changes"
        exit 1
