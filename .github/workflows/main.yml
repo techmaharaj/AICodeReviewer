@@ -26,5 +26,7 @@ jobs:
       run: curl https://get.gptscript.ai/install.sh | sh
 
     - name: Run GPTScript for Code Review
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         gptscript https://get.gptscript.ai/echo.gpt
