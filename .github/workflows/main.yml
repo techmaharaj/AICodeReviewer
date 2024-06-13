@@ -33,6 +33,7 @@ jobs:
       run: |
         REVIEW_COMMENT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
         echo "${REVIEW_COMMENT}" > review_comment.md
+        cat review_comment.md
         
     - name: Post Review Comment
       if: steps.run_gptscript.outputs.review_comment != ''
