@@ -11,6 +11,7 @@ Perform the following steps in order:
     1. Analyze the complete code of each identified file and perform a detailed line by line code review.
     2. Repeat the process for each changed file in the pr.
 2. Share your review comments separately for each file.
+3. In a new line write "Code: Approved" or "Code: Require Changes" based on the review comments.
 ---
 Name: learn-gh
 Description: A tool to help you learn gh cli
