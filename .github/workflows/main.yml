@@ -34,10 +34,12 @@ jobs:
         echo "REVIEW_RESULT<<EOF" >> $GITHUB_ENV
         echo "${REVIEW_RESULT}" >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
-        if [[ $REVIEW_RESULT == *"Code: Approved"* ]]; then
+        if [[ "${REVIEW_RESULT}" == *"Code: Approved"* ]]; then
           echo "::set-output name=review_status::approved"
-        else [[ $REVIEW_RESULT == *"Code: Require Changes"* ]]; then
+        elif [[ "${REVIEW_RESULT}" == *"Code: Require Changes"* ]]; then
           echo "::set-output name=review_status::changes_required"
+        fi
+        echo "REVIEW_RESULT=${REVIEW_RESULT}" >> $GITHUB_ENV
 
     - name: Set Review Status
       id: review_status
