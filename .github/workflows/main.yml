@@ -37,5 +37,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        REVIEW_RESULT=$(cat review_result.txt)
         gh pr comment ${{ github.event.pull_request.number }} --body "${{ steps.run_gptscript.outputs.review_result }}"
