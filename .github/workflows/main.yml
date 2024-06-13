@@ -40,16 +40,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         gh pr comment ${{ github.event.pull_request.number }} --body "$(cat review_comment.md)"
-        
-    - name: Set Workflow Status
-      if: steps.run_gptscript.outputs.review_comment != ''
-      run: |
-        REVIEW_COMMENT="${{ steps.run_gptscript.outputs.review_comment }}"
-        run: |
-        REVIEW_COMMENT="${{ steps.run_gptscript.outputs.review_comment }}"
-        if echo "${REVIEW_COMMENT}" | grep -q "Code: Approved"; then
-          echo "Code review approved."
-        else echo "${REVIEW_COMMENT}" | grep -q "Code: Require Changes"; then
-          echo "Code review requires changes."
+        if echo "${REVIEW_COMMENT}" | grep -q "Code: Require Changes"; then
+          echo "Code requires changes."
           exit 1  # Fails the workflow if changes are required
         fi
