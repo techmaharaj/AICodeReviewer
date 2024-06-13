@@ -31,26 +31,21 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         REVIEW_RESULT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
-        echo "REVIEW_RESULT<<EOF" >> $GITHUB_ENV
-        echo "${REVIEW_RESULT}" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
-        if [[ "${REVIEW_RESULT}" == *"Code: Approved"* ]]; then
-          echo "::set-output name=review_status::approved"
-        elif [[ "${REVIEW_RESULT}" == *"Code: Require Changes"* ]]; then
-          echo "::set-output name=review_status::changes_required"
-        fi
         echo "REVIEW_RESULT=${REVIEW_RESULT}" >> $GITHUB_ENV
-
-    - name: Set Review Status
-      id: review_status
-      run: echo "Review status is ${{ steps.run_gptscript.outputs.review_status }}"
+        if echo "${REVIEW_RESULT}" | grep -q "Code: Approved"; then
+          echo "::set-output name=review_status::approved"
+        elif echo "${REVIEW_RESULT}" | grep -q "Code: Require Changes"; then
+          echo "::set-output name=review_status::changes_required"
+        else
+          echo "::set-output name=review_status::unknown"
+        fi
 
     - name: Post Review Comment
       if: steps.run_gptscript.outputs.review_status != 'unknown'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        echo "${{ env.REVIEW_RESULT }}" | gh pr comment ${{ env.PR_NUMBER }} --body "${{ steps.run_gptscript.outputs.review_status }}"
+        gh pr comment ${{ env.PR_NUMBER }} --body "${{ steps.run_gptscript.outputs.review_status }}"
 
     - name: Set Workflow Status
       if: steps.run_gptscript.outputs.review_status == 'changes_required'
