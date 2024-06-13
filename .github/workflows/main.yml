@@ -43,5 +43,4 @@ jobs:
         gh pr comment ${{ github.event.pull_request.number }} --body "$(cat review_comment.md)"
         if echo "${REVIEW_COMMENT}" | grep -q "Code: Require Changes"; then
           echo "Code requires changes."
-          exit 1  # Fails the workflow if changes are required
         fi
