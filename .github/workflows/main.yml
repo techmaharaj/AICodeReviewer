@@ -31,7 +31,7 @@ jobs:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        REVIEW_RESULT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
+        REVIEW_COMMENT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
         echo "${REVIEW_COMMENT}" > review_comment.md
 
     - name: View Comments
