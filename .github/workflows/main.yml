@@ -31,11 +31,9 @@ jobs:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        REVIEW_COMMENT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
-        echo "${REVIEW_COMMENT}" > review_comment.md
         {
         echo 'REVIEW<<EOF'
-        cat review_comment.md
+        gptscript codereview.gpt --PR_URL=${{ env.PR_URL }}
         echo EOF
         } >> "$GITHUB_ENV"
 
@@ -44,17 +42,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        gh pr comment ${{ github.event.pull_request.number }} --body "$(cat review_comment.md)"
+        gh pr comment ${{ github.event.pull_request.number }} --body "${{ env.REVIEW }}"
 
-    - name: Set Workflow Status
+    # Then you can use it in your if statement like so 
+    - name: Conditionally Run
+      if: contains(env.REVIEW, 'Code/':'/ Require Changes')
       run: |
-        REVIEW="${{ env.REVIEW }}"
-        if echo "${REVIEW}" | grep -q "Code: Approved"; then
-          echo "Code review approved."
-        elif echo "${REVIEW}" | grep -q "Code: Require Changes"; then
-          echo "Code review requires changes."
-          exit 1  # Fails the workflow if changes are required
-        else
-          echo "Unknown code review status."
-          exit 1  # Fails the workflow if status is unknown
-        fi
+       echo "Code Required Changes"
+       exit 1
