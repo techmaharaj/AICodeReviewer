@@ -33,7 +33,12 @@ jobs:
       run: |
         REVIEW_COMMENT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
         echo "${REVIEW_COMMENT}" > review_comment.md
+        {
+        echo 'REVIEW<<EOF'
         cat review_comment.md
+        echo EOF
+        } >> "$GITHUB_ENV"
+
         
     - name: Post Review Comment
       env:
@@ -43,10 +48,10 @@ jobs:
 
     - name: Set Workflow Status
       run: |
-        REVIEW_COMMENT="${{ steps.run_gptscript.outputs.review_comment }}"
-        if echo "${REVIEW_COMMENT}" | grep -q "Code: Approved"; then
+        REVIEW="${{ env.REVIEW }}"
+        if echo "${REVIEW}" | grep -q "Code: Approved"; then
           echo "Code review approved."
-        elif echo "${REVIEW_COMMENT}" | grep -q "Code: Require Changes"; then
+        elif echo "${REVIEW}" | grep -q "Code: Require Changes"; then
           echo "Code review requires changes."
           exit 1  # Fails the workflow if changes are required
         else
