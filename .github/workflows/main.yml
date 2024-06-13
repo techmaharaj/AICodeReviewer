@@ -31,22 +31,11 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         REVIEW_RESULT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
-        echo "REVIEW_RESULT=${REVIEW_RESULT}" >> $GITHUB_ENV
-        if echo "${REVIEW_RESULT}" | grep -q "Code: Approved"; then
-          echo "::set-output name=review_status::approved"
-        elif echo "${REVIEW_RESULT}" | grep -q "Code: Require Changes"; then
-          echo "::set-output name=review_status::changes_required"
-        else
-          echo "::set-output name=review_status::unknown"
-        fi
-
+        echo "::set-output name=review_result::${REVIEW_RESULT}"
+        
     - name: Post Review Comment
-      if: steps.run_gptscript.outputs.review_status != 'unknown'
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        gh pr comment ${{ env.PR_NUMBER }} --body "${{ steps.run_gptscript.outputs.review_status }}"
-
-    - name: Set Workflow Status
-      if: steps.run_gptscript.outputs.review_status == 'changes_required'
-      run: exit 1
+        REVIEW_RESULT=$(cat review_result.txt)
+        gh pr comment ${{ github.event.pull_request.number }} --body "${{ steps.run_gptscript.outputs.review_result }}"
