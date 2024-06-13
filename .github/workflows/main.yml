@@ -33,6 +33,9 @@ jobs:
       run: |
         REVIEW_RESULT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
         echo "${REVIEW_COMMENT}" > review_comment.md
+
+    - name: View Comments
+      run: cat review_comment.md
         
     - name: Post Review Comment
       env:
