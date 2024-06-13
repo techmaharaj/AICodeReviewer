@@ -29,7 +29,4 @@ jobs:
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        REVIEW_RESULT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
-        echo "REVIEW_RESULT<<EOF" >> $GITHUB_ENV
-        echo "${REVIEW_RESULT}" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
+        gptscript codereview.gpt --PR_URL=${{ env.PR_URL }}
