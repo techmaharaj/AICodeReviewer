@@ -28,5 +28,6 @@ jobs:
     - name: Run GPTScript for Code Review
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         gptscript codereview.gpt --PR_URL=${{ env.PR_URL }}
