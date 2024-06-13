@@ -31,10 +31,10 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         REVIEW_RESULT=$(gptscript codereview.gpt --PR_URL=${{ env.PR_URL }})
-        echo "::set-output name=review_result::${REVIEW_RESULT}"
+        echo "REVIEW_COMMENT=$(REVIEW_RESULT)\n" >> $GITHUB_OUTPUT
         
     - name: Post Review Comment
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        gh pr comment ${{ github.event.pull_request.number }} --body "${{ steps.run_gptscript.outputs.review_result }}"
+        gh pr comment ${{ github.event.pull_request.number }} --body "${{ steps.run_gptscript.outputs.review_comment }}"
