@@ -24,10 +24,10 @@ pipeline {
                     ])
 
                     withCredentials([string(credentialsId: 'OPENAI_API_KEY', variable: 'OPENAI_API_KEY')]){
-                        withCredentials([string(credentialsId: 'GH_PAT', variable: 'GH_PAT')]) {
+                        withCredentials([string(credentialsId: 'GH_TOKEN', variable: 'GH_TOKEN')]) {
                             REVIEW = sh(script: "gptscript codereview.gpt --PR_URL=${PR_URL}", returnStdout: true).trim()
                             replacedText = REVIEW.replaceAll(~/\n/, "<br>").replaceAll('"'," ").replaceAll("'"," ").replaceAll("`"," ")               
-                            sh "curl -H \"Authorization: Token ${GH_PAT}\" -X POST -d '{\"body\": \"${replacedText}\"}' '${PR_COMMENTS_URL}'"
+                            sh "curl -H \"Authorization: Token ${GH_TOKEN}\" -X POST -d '{\"body\": \"${replacedText}\"}' '${PR_COMMENTS_URL}'"
                     }
                     }
                 }
