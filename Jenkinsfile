@@ -54,16 +54,4 @@ pipeline {
             }
         }
     }
-
-     post {
-        always {
-            // Update GitHub with the build status
-            script {
-                def buildStatus = currentBuild.result ?: 'SUCCESS'
-                def statusMsg = buildStatus == 'SUCCESS' ? 'Build succeeded' : 'Build failed'
-                githubNotify context: 'Jenkins Build', description: statusMsg, status: buildStatus.toLowerCase(), targetUrl: env.BUILD_URL
-            }
-        }
-    }
-
 }
