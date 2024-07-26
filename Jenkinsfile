@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-
         stage('Clean Workspace') {
             steps {
                 deleteDir()
@@ -11,10 +10,7 @@ pipeline {
 
         stage('GPT Review') {
             steps {
-
-                
                 script {
-
                     checkout([
                         $class: 'GitSCM',
                         branches: [[name: '*/main']], // Specify branch if needed
@@ -25,7 +21,7 @@ pipeline {
 
                     withCredentials([string(credentialsId: 'OPENAI_API_KEY', variable: 'OPENAI_API_KEY')]){
                         withCredentials([string(credentialsId: 'GH_TOKEN', variable: 'GH_TOKEN')]) {
-                            // Assuming PR_URL is set by some previous webhook or step
+                            // GPTSCript reviews the code
                             REVIEW = sh(script: "gptscript codereview.gpt --PR_URL=${PR_URL}", returnStdout: true).trim()
                             
                             // Construct the JSON payload using Groovy's JSON library
