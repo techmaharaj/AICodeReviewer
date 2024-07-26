@@ -29,10 +29,11 @@ pipeline {
                             REVIEW = sh(script: "gptscript codereview.gpt --PR_URL=${PR_URL}", returnStdout: true).trim()
                             
                             // Prepare the markdown formatted review comment
-                            def markdownReview = REVIEW.replaceAll('"', '\\"').replaceAll("'", "\\'").replaceAll("`", "\\`")
-                            
+                            def markdownReview = REVIEW.replaceAll(/[\r\n]+/, '\\n').replaceAll('"', '\\"')
+                            def jsonPayload = "{\"body\": \"${markdownReview}\"}"
+
                             // Post the review comment to the GitHub PR
-                            sh "curl -H \"Authorization: token ${GH_TOKEN}\" -X POST -d '{\"body\": \"${markdownReview}\"}' '${PR_COMMENTS_URL}'"
+                            sh "curl -H \"Authorization: token ${GH_TOKEN}\" -H \"Content-Type: application/json\" -X POST -d '${jsonPayload}' '${PR_COMMENTS_URL}'"
                     }
                     }
                 }
